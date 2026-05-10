@@ -3,6 +3,7 @@ import 'screens/dashboard_screen.dart';
 import 'screens/appointments_screen.dart';
 import 'screens/messages_screen.dart';
 import 'screens/records_screen.dart';
+import 'screens/profile_screen.dart';
 
 void main() {
   runApp(const AleraApp());
@@ -69,14 +70,22 @@ class _MainNavigationState extends State<MainNavigation> {
         actions: [
           IconButton(
             icon: const Icon(Icons.account_circle),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfileScreen()),
+              );
+            },
             tooltip: 'View Profile',
           ),
         ],
       ),
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: _screens,
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        child: KeyedSubtree(
+          key: ValueKey<int>(_selectedIndex),
+          child: _screens[_selectedIndex],
+        ),
       ),
       bottomNavigationBar: NavigationBar(
         destinations: const <Widget>[
@@ -104,7 +113,7 @@ class _MainNavigationState extends State<MainNavigation> {
         selectedIndex: _selectedIndex,
         onDestinationSelected: _onItemTapped,
       ),
-      floatingActionButton: _selectedIndex == 1 // Only on Appointments tab
+      floatingActionButton: _selectedIndex == 1
           ? Semantics(
               label: 'Book a new healthcare appointment',
               button: true,
